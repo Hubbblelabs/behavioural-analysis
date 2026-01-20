@@ -71,7 +71,7 @@ export function DISCBarChart({ scores }: DISCChartProps) {
                         borderRadius: '8px',
                         color: 'hsl(var(--foreground))',
                     }}
-                    formatter={(value: number, name: string) => [value, name]}
+                    formatter={(value, name) => [value ?? 0, name]}
                     labelFormatter={(label) => {
                         const item = data.find(d => d.shortName === label)
                         return item?.name || label
