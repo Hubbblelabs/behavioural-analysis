@@ -15,12 +15,17 @@ export default function AssessmentPage() {
     const [answers, setAnswers] = useState<Record<number, DISCType>>({})
     const [selectedOption, setSelectedOption] = useState<string>("")
     const [showConfirmation, setShowConfirmation] = useState(false)
+    const [showIncompleteWarning, setShowIncompleteWarning] = useState(false)
     const [isAnimating, setIsAnimating] = useState(false)
 
     const question = discQuestions[currentQuestion]
     const totalQuestions = discQuestions.length
-    const progress = ((currentQuestion + 1) / totalQuestions) * 100
-    const answeredCount = Object.keys(answers).length + (selectedOption ? 1 : 0)
+    // Calculate actual answered count (excluding current if not yet saved)
+    const answeredCount = Object.keys(answers).length
+    // Progress based on actual answers, not current position
+    const progress = (answeredCount / totalQuestions) * 100
+    // Count including current selection for display
+    const displayAnsweredCount = answeredCount + (selectedOption && !answers[question.id] ? 1 : 0)
 
     // Reset selected option when changing questions
     useEffect(() => {
@@ -45,9 +50,13 @@ export default function AssessmentPage() {
                 setCurrentQuestion(prev => prev + 1)
             } else {
                 // Check if all questions are answered
-                const allAnswered = Object.keys(answers).length === totalQuestions
-                if (allAnswered || (Object.keys(answers).length === totalQuestions - 1 && selectedOption)) {
+                const currentAnswers = { ...answers, [question.id]: selectedOption as DISCType }
+                const allAnswered = Object.keys(currentAnswers).length === totalQuestions
+                if (allAnswered) {
                     setShowConfirmation(true)
+                } else {
+                    // Show incomplete warning modal
+                    setShowIncompleteWarning(true)
                 }
             }
             setIsAnimating(false)
@@ -117,6 +126,73 @@ export default function AssessmentPage() {
         )
     }
 
+    // Incomplete Warning Modal
+    if (showIncompleteWarning) {
+        const unansweredQuestions = discQuestions.filter(q => !answers[q.id] && q.id !== question.id || (q.id === question.id && !selectedOption))
+        const unansweredCount = totalQuestions - Object.keys({ ...answers, ...(selectedOption ? { [question.id]: selectedOption } : {}) }).length
+
+        return (
+            <div className="min-h-screen min-h-dvh bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center px-4 safe-area-inset">
+                <Card className="max-w-md w-full border-0 shadow-2xl animate-scale-in">
+                    <CardContent className="p-6 sm:p-8 text-center">
+                        <div className="mb-5 sm:mb-6 mx-auto flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 text-3xl sm:text-4xl shadow-lg shadow-amber-500/30 animate-float">
+                            ⚠️
+                        </div>
+                        <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-2 sm:mb-3">
+                            Questions Incomplete
+                        </h2>
+                        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 mb-4">
+                            You have <span className="font-bold text-amber-600">{unansweredCount}</span> unanswered question{unansweredCount !== 1 ? 's' : ''}. Please complete all questions to get accurate results.
+                        </p>
+                        <div className="bg-slate-100 dark:bg-slate-800 rounded-xl p-4 mb-6">
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">Unanswered questions:</p>
+                            <div className="flex flex-wrap gap-2 justify-center">
+                                {discQuestions.map((q, idx) => {
+                                    const isAnswered = answers[q.id] || (q.id === question.id && selectedOption)
+                                    if (isAnswered) return null
+                                    return (
+                                        <button
+                                            key={q.id}
+                                            onClick={() => {
+                                                setCurrentQuestion(idx)
+                                                setShowIncompleteWarning(false)
+                                            }}
+                                            className="h-8 w-8 rounded-lg text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-900/50 transition-colors"
+                                        >
+                                            {idx + 1}
+                                        </button>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-3">
+                            <Button
+                                onClick={() => {
+                                    // Find first unanswered question
+                                    const firstUnanswered = discQuestions.findIndex(q => !answers[q.id] && (q.id !== question.id || !selectedOption))
+                                    if (firstUnanswered !== -1) {
+                                        setCurrentQuestion(firstUnanswered)
+                                    }
+                                    setShowIncompleteWarning(false)
+                                }}
+                                className="w-full rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 py-5 sm:py-6 text-base sm:text-lg font-semibold shadow-lg btn-press"
+                            >
+                                Complete Remaining Questions
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                onClick={() => setShowIncompleteWarning(false)}
+                                className="w-full py-3"
+                            >
+                                Go Back
+                            </Button>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        )
+    }
+
     return (
         <div className="min-h-screen min-h-dvh bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
             {/* Background decorative elements */}
@@ -125,7 +201,7 @@ export default function AssessmentPage() {
                 <div className="absolute bottom-0 -left-20 sm:-left-40 h-40 w-40 sm:h-80 sm:w-80 rounded-full bg-gradient-to-br from-emerald-500/10 to-teal-500/10 blur-3xl" />
             </div>
 
-            {/* Header */}
+            {/* Header - Improved Mobile UI */}
             <header className="relative z-10 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg sticky top-0">
                 <div className="mx-auto max-w-4xl px-4 sm:px-6 py-3 sm:py-4">
                     <div className="flex items-center justify-between">
@@ -133,10 +209,22 @@ export default function AssessmentPage() {
                             <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 text-xs sm:text-sm font-bold text-white">
                                 D
                             </div>
-                            <span className="font-semibold text-slate-900 dark:text-white text-sm sm:text-base">DISC Assessment</span>
+                            <span className="font-semibold text-slate-900 dark:text-white text-sm sm:text-base hidden sm:inline">DISC Assessment</span>
                         </Link>
-                        <div className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                            <span className="font-medium">{answeredCount}</span> of {totalQuestions}
+                        {/* Progress Badge - Mobile Friendly */}
+                        <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 rounded-full px-3 py-1.5">
+                                <div className="h-2 w-2 rounded-full bg-emerald-500"></div>
+                                <span className="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">
+                                    <span className="font-bold text-emerald-600 dark:text-emerald-400">{displayAnsweredCount}</span>
+                                    <span className="text-slate-400 dark:text-slate-500"> / {totalQuestions}</span>
+                                </span>
+                            </div>
+                            <Link href="/" className="sm:hidden">
+                                <Button variant="ghost" size="sm" className="rounded-full h-8 w-8 p-0">
+                                    ✕
+                                </Button>
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -149,11 +237,11 @@ export default function AssessmentPage() {
                         Question {currentQuestion + 1} of {totalQuestions}
                     </span>
                     <span className="text-xs sm:text-sm font-medium text-indigo-600 dark:text-indigo-400">
-                        {Math.round(progress)}% Complete
+                        {Math.round((displayAnsweredCount / totalQuestions) * 100)}% Answered
                     </span>
                 </div>
                 <Progress
-                    value={progress}
+                    value={(displayAnsweredCount / totalQuestions) * 100}
                     className="h-1.5 sm:h-2 bg-slate-200 dark:bg-slate-800"
                     indicatorClassName="bg-gradient-to-r from-indigo-500 to-purple-500"
                 />

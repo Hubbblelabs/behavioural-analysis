@@ -89,45 +89,125 @@ export function DISCBarChart({ scores }: DISCChartProps) {
 
 export function DISCRadarChart({ scores }: DISCChartProps) {
     const data = [
-        { subject: "Dominance", value: scores.D, fullMark: 30 },
-        { subject: "Influence", value: scores.I, fullMark: 30 },
-        { subject: "Steadiness", value: scores.S, fullMark: 30 },
-        { subject: "Conscientiousness", value: scores.C, fullMark: 30 },
+        { subject: "D", fullName: "Dominance", value: scores.D, fullMark: 30, color: discColors.D.primary },
+        { subject: "I", fullName: "Influence", value: scores.I, fullMark: 30, color: discColors.I.primary },
+        { subject: "S", fullName: "Steadiness", value: scores.S, fullMark: 30, color: discColors.S.primary },
+        { subject: "C", fullName: "Conscientiousness", value: scores.C, fullMark: 30, color: discColors.C.primary },
     ]
 
+    // Custom tick component for colored labels
+    const CustomTick = ({ payload, x = 0, y = 0, textAnchor }: { payload: { value: string }, x?: number | string, y?: number | string, textAnchor?: "inherit" | "end" | "start" | "middle" }) => {
+        const item = data.find(d => d.subject === payload.value)
+        return (
+            <g transform={`translate(${x},${y})`}>
+                <text
+                    textAnchor={textAnchor}
+                    fill={item?.color || 'currentColor'}
+                    fontSize={14}
+                    fontWeight="bold"
+                    dy={4}
+                >
+                    {payload.value}
+                </text>
+            </g>
+        )
+    }
+
     return (
-        <ResponsiveContainer width="100%" height={350}>
-            <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
-                <PolarGrid className="stroke-muted" />
-                <PolarAngleAxis
-                    dataKey="subject"
-                    className="text-xs fill-muted-foreground"
-                    tick={{ fill: 'currentColor', fontSize: 12 }}
-                />
-                <PolarRadiusAxis
-                    angle={30}
-                    domain={[0, 30]}
-                    className="text-xs fill-muted-foreground"
-                    tick={{ fill: 'currentColor' }}
-                />
-                <Radar
-                    name="DISC Profile"
-                    dataKey="value"
-                    stroke="hsl(var(--primary))"
-                    fill="hsl(var(--primary))"
-                    fillOpacity={0.3}
-                    strokeWidth={2}
-                />
-                <Tooltip
-                    contentStyle={{
-                        backgroundColor: 'hsl(var(--card))',
-                        border: '1px solid hsl(var(--border))',
-                        borderRadius: '8px',
-                        color: 'hsl(var(--foreground))',
-                    }}
-                />
-            </RadarChart>
-        </ResponsiveContainer>
+        <div className="relative">
+            {/* Decorative background glow */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-48 h-48 rounded-full bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 blur-2xl" />
+            </div>
+            <ResponsiveContainer width="100%" height={350}>
+                <RadarChart cx="50%" cy="50%" outerRadius="70%" data={data}>
+                    <defs>
+                        <linearGradient id="radarGradient" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stopColor={discColors.D.primary} stopOpacity={0.8} />
+                            <stop offset="25%" stopColor={discColors.I.primary} stopOpacity={0.8} />
+                            <stop offset="50%" stopColor={discColors.S.primary} stopOpacity={0.8} />
+                            <stop offset="75%" stopColor={discColors.C.primary} stopOpacity={0.8} />
+                            <stop offset="100%" stopColor={discColors.D.primary} stopOpacity={0.8} />
+                        </linearGradient>
+                        <linearGradient id="radarFillGradient" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stopColor={discColors.D.primary} stopOpacity={0.3} />
+                            <stop offset="25%" stopColor={discColors.I.primary} stopOpacity={0.3} />
+                            <stop offset="50%" stopColor={discColors.S.primary} stopOpacity={0.3} />
+                            <stop offset="75%" stopColor={discColors.C.primary} stopOpacity={0.3} />
+                            <stop offset="100%" stopColor={discColors.D.primary} stopOpacity={0.3} />
+                        </linearGradient>
+                    </defs>
+                    <PolarGrid
+                        stroke="hsl(var(--muted-foreground))"
+                        strokeOpacity={0.2}
+                        radialLines={true}
+                    />
+                    <PolarAngleAxis
+                        dataKey="subject"
+                        tick={(props) => <CustomTick {...props} />}
+                        tickLine={false}
+                    />
+                    <PolarRadiusAxis
+                        angle={90}
+                        domain={[0, 30]}
+                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
+                        tickCount={4}
+                        axisLine={false}
+                    />
+                    <Radar
+                        name="DISC Profile"
+                        dataKey="value"
+                        stroke="url(#radarGradient)"
+                        fill="url(#radarFillGradient)"
+                        strokeWidth={3}
+                        dot={{
+                            r: 6,
+                            fill: 'white',
+                            stroke: 'url(#radarGradient)',
+                            strokeWidth: 2,
+                        }}
+                        activeDot={{
+                            r: 8,
+                            fill: 'hsl(var(--primary))',
+                            stroke: 'white',
+                            strokeWidth: 2,
+                        }}
+                    />
+                    <Tooltip
+                        contentStyle={{
+                            backgroundColor: 'hsl(var(--card))',
+                            border: '1px solid hsl(var(--border))',
+                            borderRadius: '12px',
+                            color: 'hsl(var(--foreground))',
+                            boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
+                            padding: '12px 16px',
+                        }}
+                        formatter={(value, _name, props) => {
+                            const numValue = typeof value === 'number' ? value : 0
+                            const percentage = Math.round((numValue / 30) * 100)
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            const payload = (props as any).payload
+                            return [
+                                `${numValue} / 30 (${percentage}%)`,
+                                payload?.fullName || ''
+                            ]
+                        }}
+                    />
+                </RadarChart>
+            </ResponsiveContainer>
+            {/* Legend */}
+            <div className="flex justify-center gap-4 mt-2 flex-wrap">
+                {data.map((item) => (
+                    <div key={item.subject} className="flex items-center gap-1.5">
+                        <div
+                            className="w-3 h-3 rounded-full"
+                            style={{ backgroundColor: item.color }}
+                        />
+                        <span className="text-xs text-muted-foreground">{item.fullName}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
     )
 }
 

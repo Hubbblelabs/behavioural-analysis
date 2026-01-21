@@ -22,7 +22,7 @@ export default function ReportPage() {
     const [scores, setScores] = useState<DISCScores | null>(null)
     const [rankedTypes, setRankedTypes] = useState<DISCType[]>([])
     const [isLoaded, setIsLoaded] = useState(false)
-    const [isPrinting, setIsPrinting] = useState(false)
+    const [isGeneratingPdf, setIsGeneratingPdf] = useState(false)
 
     useEffect(() => {
         const storedScores = sessionStorage.getItem('discScores')
@@ -37,12 +37,70 @@ export default function ReportPage() {
         }
     }, [router])
 
-    const handlePrint = () => {
-        setIsPrinting(true)
-        setTimeout(() => {
+    const handleDownloadPdf = async () => {
+        if (!reportRef.current) return
+
+        setIsGeneratingPdf(true)
+
+        try {
+            // Dynamically import to avoid SSR issues
+            const html2canvas = (await import('html2canvas')).default
+            const { jsPDF } = await import('jspdf')
+
+            // Hide no-print elements temporarily
+            const noPrintElements = document.querySelectorAll('.no-print')
+            noPrintElements.forEach(el => (el as HTMLElement).style.display = 'none')
+
+            const canvas = await html2canvas(reportRef.current, {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                backgroundColor: '#ffffff',
+            })
+
+            // Restore no-print elements
+            noPrintElements.forEach(el => (el as HTMLElement).style.display = '')
+
+            const imgData = canvas.toDataURL('image/png')
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4',
+            })
+
+            const pdfWidth = pdf.internal.pageSize.getWidth()
+            const pdfHeight = pdf.internal.pageSize.getHeight()
+            const imgWidth = canvas.width
+            const imgHeight = canvas.height
+            const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight)
+            const imgX = (pdfWidth - imgWidth * ratio) / 2
+            const imgY = 0
+
+            // Calculate if we need multiple pages
+            const scaledImgHeight = (imgHeight * pdfWidth) / imgWidth
+            let heightLeft = scaledImgHeight
+            let position = 0
+
+            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, scaledImgHeight)
+            heightLeft -= pdfHeight
+
+            while (heightLeft > 0) {
+                position = heightLeft - scaledImgHeight
+                pdf.addPage()
+                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, scaledImgHeight)
+                heightLeft -= pdfHeight
+            }
+
+            // Generate filename with date
+            const date = new Date().toISOString().split('T')[0]
+            pdf.save(`DISC-Personality-Report-${date}.pdf`)
+        } catch (error) {
+            console.error('Error generating PDF:', error)
+            // Fallback to print
             window.print()
-            setIsPrinting(false)
-        }, 100)
+        } finally {
+            setIsGeneratingPdf(false)
+        }
     }
 
     if (!isLoaded || !scores) {
@@ -100,25 +158,28 @@ export default function ReportPage() {
                             <div className="flex items-center gap-2 sm:gap-3">
                                 <Button
                                     variant="outline"
-                                    className="rounded-full gap-1 sm:gap-2 text-xs sm:text-sm px-3 sm:px-4 btn-press"
-                                    onClick={handlePrint}
-                                    disabled={isPrinting}
+                                    className="rounded-full gap-1.5 sm:gap-2 text-xs sm:text-sm px-3 sm:px-4 btn-press border-indigo-200 dark:border-indigo-800 hover:border-indigo-300 dark:hover:border-indigo-700"
+                                    onClick={handleDownloadPdf}
+                                    disabled={isGeneratingPdf}
                                 >
-                                    {isPrinting ? (
+                                    {isGeneratingPdf ? (
                                         <>
                                             <span className="animate-spin">⏳</span>
-                                            <span className="hidden sm:inline">Preparing...</span>
+                                            <span className="hidden sm:inline">Generating...</span>
+                                            <span className="sm:hidden">Wait</span>
                                         </>
                                     ) : (
                                         <>
-                                            📄 <span className="hidden sm:inline">Download PDF</span>
+                                            <span>📥</span>
+                                            <span className="hidden sm:inline">Download PDF</span>
                                             <span className="sm:hidden">PDF</span>
                                         </>
                                     )}
                                 </Button>
                                 <Link href="/results">
-                                    <Button variant="ghost" className="rounded-full text-xs sm:text-sm btn-press">
-                                        <span className="hidden sm:inline">Back to Dashboard</span>
+                                    <Button variant="ghost" className="rounded-full text-xs sm:text-sm btn-press gap-1">
+                                        <span>←</span>
+                                        <span className="hidden sm:inline">Dashboard</span>
                                         <span className="sm:hidden">Back</span>
                                     </Button>
                                 </Link>
@@ -599,10 +660,20 @@ export default function ReportPage() {
                                 </p>
                                 <Button
                                     size="lg"
-                                    className="rounded-full bg-white text-indigo-600 hover:bg-indigo-50 px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg font-semibold shadow-lg btn-press"
-                                    onClick={handlePrint}
+                                    className="rounded-full bg-white text-indigo-600 hover:bg-indigo-50 px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg font-semibold shadow-lg btn-press gap-2"
+                                    onClick={handleDownloadPdf}
+                                    disabled={isGeneratingPdf}
                                 >
-                                    📄 Download PDF
+                                    {isGeneratingPdf ? (
+                                        <>
+                                            <span className="animate-spin">⏳</span>
+                                            Generating PDF...
+                                        </>
+                                    ) : (
+                                        <>
+                                            📥 Download PDF
+                                        </>
+                                    )}
                                 </Button>
                             </CardContent>
                         </Card>
