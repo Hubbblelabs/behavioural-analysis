@@ -40,10 +40,10 @@ export default function ResultsPage() {
 
     if (!isLoaded || !scores) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-                    <p className="text-slate-600 dark:text-slate-400">Loading your results...</p>
+            <div className="min-h-screen min-h-dvh flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+                <div className="text-center px-4">
+                    <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+                    <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">Loading your results...</p>
                 </div>
             </div>
         )
@@ -62,38 +62,39 @@ export default function ResultsPage() {
     }))
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+        <div className="min-h-screen min-h-dvh bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
             {/* Background decorative elements */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
                 <div
-                    className="absolute -top-40 -right-40 h-80 w-80 rounded-full blur-3xl opacity-30"
+                    className="absolute -top-20 -right-20 sm:-top-40 sm:-right-40 h-40 w-40 sm:h-80 sm:w-80 rounded-full blur-3xl opacity-30"
                     style={{ backgroundColor: discColors[primaryType].primary }}
                 />
                 <div
-                    className="absolute bottom-0 -left-40 h-80 w-80 rounded-full blur-3xl opacity-20"
+                    className="absolute bottom-0 -left-20 sm:-left-40 h-40 w-40 sm:h-80 sm:w-80 rounded-full blur-3xl opacity-20"
                     style={{ backgroundColor: discColors[secondaryType].primary }}
                 />
             </div>
 
             {/* Header */}
-            <header className="relative z-10 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg">
-                <div className="mx-auto max-w-7xl px-6 py-4">
+            <header className="relative z-10 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg sticky top-0">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 py-3 sm:py-4">
                     <div className="flex items-center justify-between">
                         <Link href="/" className="flex items-center gap-2">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 text-sm font-bold text-white">
+                            <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 text-xs sm:text-sm font-bold text-white">
                                 D
                             </div>
-                            <span className="font-semibold text-slate-900 dark:text-white">DISC Assessment</span>
+                            <span className="font-semibold text-slate-900 dark:text-white text-sm sm:text-base hidden sm:inline">DISC Assessment</span>
                         </Link>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 sm:gap-3">
                             <Link href="/report">
-                                <Button variant="outline" className="rounded-full">
-                                    View Full Report
+                                <Button variant="outline" className="rounded-full text-xs sm:text-sm px-3 sm:px-4 py-2 btn-press">
+                                    <span className="hidden sm:inline">View Full Report</span>
+                                    <span className="sm:hidden">Report</span>
                                 </Button>
                             </Link>
-                            <Link href="/assessment">
-                                <Button variant="ghost" className="rounded-full">
-                                    Retake Assessment
+                            <Link href="/assessment" className="hidden sm:block">
+                                <Button variant="ghost" className="rounded-full text-sm btn-press">
+                                    Retake
                                 </Button>
                             </Link>
                         </div>
@@ -102,9 +103,9 @@ export default function ResultsPage() {
             </header>
 
             {/* Hero Section */}
-            <section className="relative z-10 mx-auto max-w-7xl px-6 py-12">
-                <div className="text-center mb-12">
-                    <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 mb-6">
+            <section className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-12">
+                <div className="text-center mb-8 sm:mb-12 animate-fade-in">
+                    <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 mb-4 sm:mb-6">
                         <span className="relative flex h-2 w-2">
                             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
                             <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
@@ -112,37 +113,37 @@ export default function ResultsPage() {
                         Assessment Complete
                     </div>
 
-                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-4">
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-3 sm:mb-4">
                         Your DISC Personality Profile
                     </h1>
-                    <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+                    <p className="text-sm sm:text-base lg:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto px-2">
                         Based on your responses, we&apos;ve identified your behavioral tendencies and career alignment.
                     </p>
                 </div>
 
                 {/* Primary Type Hero */}
-                <Card className="border-0 shadow-2xl overflow-hidden mb-8">
+                <Card className="border-0 shadow-2xl overflow-hidden mb-6 sm:mb-8 animate-fade-in-up">
                     <div
-                        className="h-2"
+                        className="h-1.5 sm:h-2"
                         style={{ background: `linear-gradient(to right, ${discColors[primaryType].primary}, ${discColors[secondaryType].primary})` }}
                     />
-                    <CardContent className="p-8">
-                        <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6">
+                    <CardContent className="p-4 sm:p-6 lg:p-8">
+                        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
                             <div
-                                className="flex h-24 w-24 items-center justify-center rounded-3xl text-4xl font-bold text-white shadow-xl"
+                                className="flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl text-3xl sm:text-4xl font-bold text-white shadow-xl shrink-0"
                                 style={{
                                     background: `linear-gradient(135deg, ${discColors[primaryType].primary}, ${discColors[primaryType].primary}dd)`
                                 }}
                             >
                                 {primaryType}
                             </div>
-                            <div className="flex-1">
-                                <div className="flex flex-wrap items-center gap-3 mb-2">
-                                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+                            <div className="flex-1 text-center sm:text-left">
+                                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-2">
+                                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
                                         {primaryProfile.title}
                                     </h2>
                                     <Badge
-                                        className="px-3 py-1"
+                                        className="px-2 sm:px-3 py-0.5 sm:py-1 text-xs"
                                         style={{
                                             backgroundColor: discColors[primaryType].light,
                                             color: discColors[primaryType].primary
@@ -151,14 +152,14 @@ export default function ResultsPage() {
                                         Primary Type
                                     </Badge>
                                 </div>
-                                <p className="text-lg text-slate-600 dark:text-slate-400 mb-4">
+                                <p className="text-sm sm:text-base lg:text-lg text-slate-600 dark:text-slate-400 mb-3 sm:mb-4">
                                     {primaryProfile.tagline}
                                 </p>
-                                <div className="flex flex-wrap gap-2">
-                                    <Badge variant="outline" className="rounded-full">
+                                <div className="flex flex-wrap justify-center sm:justify-start gap-2">
+                                    <Badge variant="outline" className="rounded-full text-xs sm:text-sm">
                                         {primaryProfile.icon} {discColors[primaryType].name}
                                     </Badge>
-                                    <Badge variant="outline" className="rounded-full">
+                                    <Badge variant="outline" className="rounded-full text-xs sm:text-sm">
                                         Score: {scores[primaryType]} ({getScoreLevel(scores[primaryType]).level})
                                     </Badge>
                                 </div>
@@ -168,92 +169,93 @@ export default function ResultsPage() {
                 </Card>
 
                 {/* Score Cards Grid */}
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-12">
-                    {(['D', 'I', 'S', 'C'] as const).map((type) => (
-                        <ScoreCard key={type} type={type} score={scores[type]} />
+                <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4 mb-8 sm:mb-12">
+                    {(['D', 'I', 'S', 'C'] as const).map((type, index) => (
+                        <div key={type} className={`animate-fade-in-up stagger-${index + 1}`}>
+                            <ScoreCard type={type} score={scores[type]} />
+                        </div>
                     ))}
                 </div>
 
                 {/* Charts Section */}
-                <div className="grid gap-8 lg:grid-cols-2 mb-12">
+                <div className="grid gap-6 sm:gap-8 lg:grid-cols-2 mb-8 sm:mb-12">
                     {/* Chart Card */}
-                    <Card className="border-0 shadow-xl">
-                        <CardHeader>
-                            <div className="flex items-center justify-between">
-                                <CardTitle>Score Visualization</CardTitle>
+                    <Card className="border-0 shadow-xl animate-fade-in-up">
+                        <CardHeader className="px-4 sm:px-6 py-4 sm:py-6">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <CardTitle className="text-lg sm:text-xl">Score Visualization</CardTitle>
                                 <div className="flex gap-2">
                                     <Button
                                         variant={chartType === 'bar' ? 'default' : 'outline'}
                                         size="sm"
                                         onClick={() => setChartType('bar')}
-                                        className="rounded-full"
+                                        className="rounded-full text-xs sm:text-sm btn-press"
                                     >
-                                        Bar Chart
+                                        Bar
                                     </Button>
                                     <Button
                                         variant={chartType === 'radar' ? 'default' : 'outline'}
                                         size="sm"
                                         onClick={() => setChartType('radar')}
-                                        className="rounded-full"
+                                        className="rounded-full text-xs sm:text-sm btn-press"
                                     >
-                                        Radar Chart
+                                        Radar
                                     </Button>
                                 </div>
                             </div>
                         </CardHeader>
-                        <CardContent>
-                            {chartType === 'bar' ? (
-                                <DISCBarChart scores={scores} />
-                            ) : (
-                                <DISCRadarChart scores={scores} />
-                            )}
+                        <CardContent className="px-2 sm:px-6 pb-4 sm:pb-6">
+                            <div className="w-full overflow-x-auto">
+                                {chartType === 'bar' ? (
+                                    <DISCBarChart scores={scores} />
+                                ) : (
+                                    <DISCRadarChart scores={scores} />
+                                )}
+                            </div>
                         </CardContent>
                     </Card>
 
                     {/* Score Table */}
-                    <Card className="border-0 shadow-xl">
-                        <CardHeader>
-                            <CardTitle>Detailed Score Breakdown</CardTitle>
-                            <CardDescription>Your scores across all DISC dimensions</CardDescription>
+                    <Card className="border-0 shadow-xl animate-fade-in-up stagger-1">
+                        <CardHeader className="px-4 sm:px-6 py-4 sm:py-6">
+                            <CardTitle className="text-lg sm:text-xl">Detailed Score Breakdown</CardTitle>
+                            <CardDescription className="text-xs sm:text-sm">Your scores across all DISC dimensions</CardDescription>
                         </CardHeader>
-                        <CardContent>
-                            <div className="space-y-4">
+                        <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
+                            <div className="space-y-3 sm:space-y-4">
                                 {rankedTypes.map((type, index) => {
                                     const level = getScoreLevel(scores[type])
                                     const percentage = (scores[type] / 30) * 100
 
                                     return (
-                                        <div key={type} className="space-y-2">
+                                        <div key={type} className="space-y-1.5 sm:space-y-2">
                                             <div className="flex items-center justify-between">
-                                                <div className="flex items-center gap-3">
+                                                <div className="flex items-center gap-2 sm:gap-3">
                                                     <div
-                                                        className="flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold text-white"
+                                                        className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg text-xs sm:text-sm font-bold text-white"
                                                         style={{ backgroundColor: discColors[type].primary }}
                                                     >
                                                         {type}
                                                     </div>
                                                     <div>
-                                                        <span className="font-medium text-slate-900 dark:text-white">
+                                                        <span className="font-medium text-slate-900 dark:text-white text-sm sm:text-base">
                                                             {discColors[type].name}
                                                         </span>
                                                         {index === 0 && (
-                                                            <Badge className="ml-2 text-xs" variant="outline">Primary</Badge>
+                                                            <Badge className="ml-2 text-xs hidden sm:inline-flex" variant="outline">Primary</Badge>
                                                         )}
                                                         {index === 1 && (
-                                                            <Badge className="ml-2 text-xs" variant="outline">Secondary</Badge>
-                                                        )}
-                                                        {index === 2 && (
-                                                            <Badge className="ml-2 text-xs" variant="outline">Tertiary</Badge>
+                                                            <Badge className="ml-2 text-xs hidden sm:inline-flex" variant="outline">Secondary</Badge>
                                                         )}
                                                     </div>
                                                 </div>
                                                 <div className="text-right">
-                                                    <span className="font-bold text-slate-900 dark:text-white">{scores[type]}</span>
-                                                    <span className="text-sm text-slate-500 dark:text-slate-400"> / 30</span>
-                                                    <p className="text-xs text-slate-500">{level.level}</p>
+                                                    <span className="font-bold text-slate-900 dark:text-white text-sm sm:text-base">{scores[type]}</span>
+                                                    <span className="text-xs sm:text-sm text-slate-500 dark:text-slate-400"> / 30</span>
+                                                    <p className="text-xs text-slate-500 hidden sm:block">{level.level}</p>
                                                 </div>
                                             </div>
-                                            <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
+                                            <div className="h-1.5 sm:h-2 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
                                                 <div
                                                     className="h-full rounded-full transition-all duration-700 ease-out"
                                                     style={{
@@ -271,32 +273,32 @@ export default function ResultsPage() {
                 </div>
 
                 {/* Career Recommendations */}
-                <div className="mb-12">
-                    <div className="text-center mb-8">
-                        <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-2">
+                <div className="mb-8 sm:mb-12">
+                    <div className="text-center mb-6 sm:mb-8">
+                        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-2">
                             Top Career Matches
                         </h2>
-                        <p className="text-slate-600 dark:text-slate-400">
+                        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 px-2">
                             Based on your DISC profile, here are careers that align with your natural tendencies
                         </p>
                     </div>
 
-                    <div className="grid gap-6 md:grid-cols-3">
+                    <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-3">
                         {topCareers.map((career, index) => (
                             <Card
                                 key={index}
-                                className="border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
+                                className={`border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 card-hover animate-fade-in-up stagger-${index + 1}`}
                             >
-                                <CardContent className="p-6">
-                                    <div className="flex items-start justify-between mb-4">
+                                <CardContent className="p-4 sm:p-6">
+                                    <div className="flex items-start justify-between mb-3 sm:mb-4">
                                         <div
-                                            className="flex h-14 w-14 items-center justify-center rounded-2xl text-2xl shadow-lg"
+                                            className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl text-xl sm:text-2xl shadow-lg"
                                             style={{ backgroundColor: discColors[career.type].light }}
                                         >
                                             {career.icon}
                                         </div>
                                         <Badge
-                                            className="rounded-full"
+                                            className="rounded-full text-xs"
                                             style={{
                                                 backgroundColor: discColors[career.type].light,
                                                 color: discColors[career.type].primary
@@ -305,14 +307,14 @@ export default function ResultsPage() {
                                             #{career.rank} Match
                                         </Badge>
                                     </div>
-                                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+                                    <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-2">
                                         {career.title}
                                     </h3>
-                                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+                                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mb-3 sm:mb-4">
                                         {career.description}
                                     </p>
-                                    <div className="flex flex-wrap gap-2">
-                                        {career.skills.map((skill, skillIndex) => (
+                                    <div className="flex flex-wrap gap-1 sm:gap-2">
+                                        {career.skills.slice(0, 3).map((skill, skillIndex) => (
                                             <Badge
                                                 key={skillIndex}
                                                 variant="outline"
@@ -329,11 +331,11 @@ export default function ResultsPage() {
                 </div>
 
                 {/* Personality Summary */}
-                <Card className="border-0 shadow-xl mb-12">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-3">
+                <Card className="border-0 shadow-xl mb-8 sm:mb-12 animate-fade-in-up">
+                    <CardHeader className="px-4 sm:px-6 py-4 sm:py-6">
+                        <CardTitle className="flex items-center gap-2 sm:gap-3 text-lg sm:text-xl">
                             <span
-                                className="flex h-10 w-10 items-center justify-center rounded-xl text-lg"
+                                className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl text-base sm:text-lg"
                                 style={{
                                     backgroundColor: discColors[primaryType].light,
                                     color: discColors[primaryType].primary
@@ -343,35 +345,35 @@ export default function ResultsPage() {
                             </span>
                             Personality Summary
                         </CardTitle>
-                        <CardDescription>Understanding your {primaryProfile.title} profile</CardDescription>
+                        <CardDescription className="text-xs sm:text-sm">Understanding your {primaryProfile.title} profile</CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-6">
-                        <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
+                    <CardContent className="space-y-4 sm:space-y-6 px-4 sm:px-6 pb-4 sm:pb-6">
+                        <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed">
                             {primaryProfile.description}
                         </p>
 
-                        <div className="grid gap-6 md:grid-cols-2">
+                        <div className="grid gap-4 sm:gap-6 sm:grid-cols-2">
                             <div>
-                                <h4 className="font-semibold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                                <h4 className="font-semibold text-slate-900 dark:text-white mb-2 sm:mb-3 flex items-center gap-2 text-sm sm:text-base">
                                     <span className="text-emerald-500">✦</span> Core Strengths
                                 </h4>
-                                <ul className="space-y-2">
+                                <ul className="space-y-1.5 sm:space-y-2">
                                     {primaryProfile.coreStrengths.slice(0, 4).map((strength, index) => (
-                                        <li key={index} className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                                            <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                                        <li key={index} className="flex items-center gap-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                                            <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
                                             {strength}
                                         </li>
                                     ))}
                                 </ul>
                             </div>
                             <div>
-                                <h4 className="font-semibold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                                <h4 className="font-semibold text-slate-900 dark:text-white mb-2 sm:mb-3 flex items-center gap-2 text-sm sm:text-base">
                                     <span className="text-amber-500">✦</span> Development Areas
                                 </h4>
-                                <ul className="space-y-2">
+                                <ul className="space-y-1.5 sm:space-y-2">
                                     {primaryProfile.developmentAreas.slice(0, 4).map((area, index) => (
-                                        <li key={index} className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                                            <div className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                                        <li key={index} className="flex items-center gap-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                                            <div className="h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
                                             {area}
                                         </li>
                                     ))}
@@ -383,19 +385,19 @@ export default function ResultsPage() {
 
                 {/* CTA Section */}
                 <div className="text-center">
-                    <Card className="border-0 bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-2xl">
-                        <CardContent className="p-8">
-                            <h3 className="text-2xl font-bold mb-3">
+                    <Card className="border-0 bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-2xl animate-fade-in-up">
+                        <CardContent className="p-6 sm:p-8">
+                            <h3 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3">
                                 Ready for Your Complete Report?
                             </h3>
-                            <p className="text-indigo-100 mb-6 max-w-2xl mx-auto">
+                            <p className="text-indigo-100 mb-4 sm:mb-6 max-w-2xl mx-auto text-sm sm:text-base px-2">
                                 Get a comprehensive PDF-style report with detailed personality insights,
                                 career recommendations, and an action plan for personal growth.
                             </p>
                             <Link href="/report">
                                 <Button
                                     size="lg"
-                                    className="rounded-full bg-white text-indigo-600 hover:bg-indigo-50 px-8 py-6 text-lg font-semibold shadow-lg"
+                                    className="rounded-full bg-white text-indigo-600 hover:bg-indigo-50 px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg font-semibold shadow-lg btn-press"
                                 >
                                     View Full Report
                                     <span className="ml-2">→</span>
@@ -407,10 +409,10 @@ export default function ResultsPage() {
             </section>
 
             {/* Footer */}
-            <footer className="relative z-10 border-t border-slate-200 dark:border-slate-800 py-8 mt-12">
-                <div className="mx-auto max-w-7xl px-6 text-center">
-                    <p className="text-sm text-slate-600 dark:text-slate-400">
-                        © 2025 DISC Personality Assessment. Results are for guidance purposes only.
+            <footer className="relative z-10 border-t border-slate-200 dark:border-slate-800 py-6 sm:py-8 mt-8 sm:mt-12 safe-area-inset">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 text-center">
+                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                        © {new Date().getFullYear()} DISC Personality Assessment. Results are for guidance purposes only.
                     </p>
                 </div>
             </footer>
